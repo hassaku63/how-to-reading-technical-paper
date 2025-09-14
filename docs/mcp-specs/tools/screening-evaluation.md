@@ -6,10 +6,32 @@
 - **Category**: Evaluation
 - **Purpose**: 15分スクリーニングのための自動採点と判定
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-screeningEvaluation(paper_data: object, user_keywords: string[], criteria?: object)
+```json
+{
+  "name": "screeningEvaluation",
+  "description": "15分スクリーニングのための自動採点と判定",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "user_keywords": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "ユーザーの研究キーワードリスト"
+      },
+      "criteria": {
+        "type": "object",
+        "description": "カスタム評価基準（オプション）"
+      }
+    },
+    "required": ["paper_data", "user_keywords"]
+  }
+}
 ```
 
 ## パラメータ

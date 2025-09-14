@@ -6,10 +6,28 @@
 - **Category**: Paper Analysis
 - **Purpose**: 実装可能な要素を特定し、難易度を評価
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-identifyImplementables(paper_data: object, skill_level: "beginner" | "intermediate" | "advanced")
+```json
+{
+  "name": "identifyImplementables",
+  "description": "実装可能な要素を特定し、難易度を評価",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "skill_level": {
+        "type": "string",
+        "enum": ["beginner", "intermediate", "advanced"],
+        "description": "実装者のスキルレベル"
+      }
+    },
+    "required": ["paper_data", "skill_level"]
+  }
+}
 ```
 
 ## パラメータ

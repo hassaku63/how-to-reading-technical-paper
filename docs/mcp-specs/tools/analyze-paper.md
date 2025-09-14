@@ -6,10 +6,28 @@
 - **Category**: Paper Analysis
 - **Purpose**: 論文PDFを解析し、構造化データを抽出する
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-analyzePaper(pdf_path: string, analysis_type: "survey" | "implementation")
+```json
+{
+  "name": "analyzePaper",
+  "description": "論文PDFを解析し、構造化データを抽出する",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "pdf_path": {
+        "type": "string",
+        "description": "解析対象の論文PDFファイルパス"
+      },
+      "analysis_type": {
+        "type": "string",
+        "enum": ["survey", "implementation"],
+        "description": "解析の観点（サーベイ向け or 実装向け）"
+      }
+    },
+    "required": ["pdf_path", "analysis_type"]
+  }
+}
 ```
 
 ## パラメータ

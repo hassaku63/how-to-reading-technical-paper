@@ -6,10 +6,31 @@
 - **Category**: Paper Analysis
 - **Purpose**: Abstract/図表から重要情報を自動抽出
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-extractKeyInsights(paper_data: object, focus_areas: string[])
+```json
+{
+  "name": "extractKeyInsights",
+  "description": "Abstract/図表から重要情報を自動抽出",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "focus_areas": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["problem", "method", "results", "limitations"]
+        },
+        "description": "抽出したい観点"
+      }
+    },
+    "required": ["paper_data", "focus_areas"]
+  }
+}
 ```
 
 ## パラメータ

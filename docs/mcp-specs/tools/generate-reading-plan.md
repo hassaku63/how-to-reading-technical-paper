@@ -6,10 +6,45 @@
 - **Category**: Generation
 - **Purpose**: 目的に応じた読解計画を自動生成
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-generateReadingPlan(paper_data: object, purpose: "survey" | "implementation", user_profile: object)
+```json
+{
+  "name": "generateReadingPlan",
+  "description": "目的に応じた読解計画を自動生成",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "purpose": {
+        "type": "string",
+        "enum": ["survey", "implementation"],
+        "description": "読解の目的（サーベイ or 実装）"
+      },
+      "user_profile": {
+        "type": "object",
+        "properties": {
+          "skill_level": {
+            "type": "string",
+            "enum": ["beginner", "intermediate", "advanced"]
+          },
+          "target_skills": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "time_budget": {
+            "type": "string"
+          }
+        },
+        "description": "ユーザーのスキルレベルと目標"
+      }
+    },
+    "required": ["paper_data", "purpose", "user_profile"]
+  }
+}
 ```
 
 ## パラメータ

@@ -6,10 +6,28 @@
 - **Category**: Evaluation
 - **Purpose**: 実装難易度を多面的に評価
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-evaluateComplexity(paper_data: object, target_skills: string[])
+```json
+{
+  "name": "evaluateComplexity",
+  "description": "実装難易度を多面的に評価",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "target_skills": {
+        "type": "array",
+        "items": {"type": "string"},
+        "description": "習得目標スキルリスト"
+      }
+    },
+    "required": ["paper_data", "target_skills"]
+  }
+}
 ```
 
 ## パラメータ

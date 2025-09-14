@@ -6,10 +6,33 @@
 - **Category**: Generation
 - **Purpose**: 構造化されたサマリーを生成
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-generateSummary(paper_data: object, summary_type: "survey" | "implementation", format: "brief" | "detailed")
+```json
+{
+  "name": "generateSummary",
+  "description": "構造化されたサマリーを生成",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_data": {
+        "type": "object",
+        "description": "analyzePaper の出力データ"
+      },
+      "summary_type": {
+        "type": "string",
+        "enum": ["survey", "implementation"],
+        "description": "サマリーの種類（サーベイ向け or 実装向け）"
+      },
+      "format": {
+        "type": "string",
+        "enum": ["brief", "detailed"],
+        "description": "詳細度（簡潔 or 詳細）"
+      }
+    },
+    "required": ["paper_data", "summary_type", "format"]
+  }
+}
 ```
 
 ## パラメータ

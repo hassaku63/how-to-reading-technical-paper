@@ -6,10 +6,37 @@
 - **Category**: Evaluation
 - **Purpose**: 読解進捗と理解度を記録・管理
 
-## シグネチャ
+## MCP Schema
 
-```typescript
-trackProgress(paper_id: string, phase: string, completion_data: object)
+```json
+{
+  "name": "trackProgress",
+  "description": "読解進捗と理解度を記録・管理",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "paper_id": {
+        "type": "string",
+        "description": "論文の一意識別子"
+      },
+      "phase": {
+        "type": "string",
+        "enum": ["screening", "understanding", "deep_reading"],
+        "description": "現在の読解段階"
+      },
+      "completion_data": {
+        "type": "object",
+        "properties": {
+          "checkpoints_completed": {"type": "number"},
+          "time_spent": {"type": "number"},
+          "understanding_score": {"type": "number"}
+        },
+        "description": "完了したタスクのデータ"
+      }
+    },
+    "required": ["paper_id", "phase", "completion_data"]
+  }
+}
 ```
 
 ## パラメータ
