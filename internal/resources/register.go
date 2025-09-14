@@ -41,9 +41,8 @@ func registerAsset(s *mcp.Server, a assetSpec) {
 	s.AddResource(res, handler)
 }
 
-// RegisterInitial registers the first resource from docs/mcp-specs for review.
-// We add one at a time per the requested review flow.
-func RegisterInitial(s *mcp.Server) {
+// RegisterTemplatesScreeningChecklist registers the screening checklist template (JSON).
+func RegisterTemplatesScreeningChecklist(s *mcp.Server) {
 	// 1) templates/screening-checklist (asset-driven, embedded JSON)
 	registerAsset(s, assetSpec{
 		URI:      "paper-reading://templates/screening-checklist",

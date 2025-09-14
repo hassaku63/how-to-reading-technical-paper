@@ -19,7 +19,7 @@ func RunStdio(ctx context.Context) error {
     }, nil)
 
     // Register resources from embedded assets.
-    resources.RegisterInitial(server)
+    resources.RegisterTemplatesScreeningChecklist(server)
     resources.RegisterTemplatesReadingNotes(server)
     resources.RegisterPatternsCommonStructures(server)
     resources.RegisterCriteriaPaperEvaluation(server)
