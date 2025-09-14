@@ -1,6 +1,7 @@
 # Simple Go Makefile
 
 GO ?= go
+GOCACHE ?= $(CURDIR)/.gocache
 PKG_SERVER := ./cmd/server
 PKG_DEBUG_CLIENT := ./cmd/debug-client
 BIN_DIR := bin
@@ -14,18 +15,18 @@ all: build
 build: build-server build-debug-client
 
 build-server:
-	@mkdir -p $(BIN_DIR)
-	$(GO) build -trimpath -ldflags "-s -w" -o $(SERVER_BIN) $(PKG_SERVER)
+	@mkdir -p $(BIN_DIR) $(GOCACHE)
+	GOCACHE=$(GOCACHE) $(GO) build -trimpath -ldflags "-s -w" -o $(SERVER_BIN) $(PKG_SERVER)
 
 build-debug-client:
-	@mkdir -p $(BIN_DIR)
-	$(GO) build -trimpath -ldflags "-s -w" -o $(DEBUG_CLIENT_BIN) $(PKG_DEBUG_CLIENT)
+	@mkdir -p $(BIN_DIR) $(GOCACHE)
+	GOCACHE=$(GOCACHE) $(GO) build -trimpath -ldflags "-s -w" -o $(DEBUG_CLIENT_BIN) $(PKG_DEBUG_CLIENT)
 
 run-server:
-	$(GO) run $(PKG_SERVER)
+	GOCACHE=$(GOCACHE) $(GO) run $(PKG_SERVER)
 
 run-debug-client:
-	$(GO) run $(PKG_DEBUG_CLIENT)
+	GOCACHE=$(GOCACHE) $(GO) run $(PKG_DEBUG_CLIENT)
 
 # Test debug client against MCP server using stdio transport
 test-debug-client:
@@ -47,5 +48,4 @@ fmt:
 	$(GO) fmt ./...
 
 clean:
-	rm -rf $(BIN_DIR)
-
+	rm -rf $(BIN_DIR) $(GOCACHE)
