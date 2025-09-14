@@ -114,3 +114,27 @@ func RegisterMethodologyImplementationGuide(s *mcp.Server) {
         MIMEType: "application/json",
     })
 }
+
+// RegisterActionableSurveySteps registers the actionable steps for survey (JSON).
+func RegisterActionableSurveySteps(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://actionable/survey-steps",
+        Name:     "actionable/survey-steps",
+        Title:    "サーベイ向け実践手順",
+        Desc:     "高速サーベイのための段階的手順とテンプレート",
+        Path:     "resources/actionable/survey-steps.json",
+        MIMEType: "application/json",
+    })
+}
+
+// RegisterActionableImplementationSteps registers the actionable steps for implementation (JSON).
+func RegisterActionableImplementationSteps(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://actionable/implementation-steps",
+        Name:     "actionable/implementation-steps",
+        Title:    "実装向け実践手順",
+        Desc:     "論文アイデアを実装するための段階的手順とリスク低減策",
+        Path:     "resources/actionable/implementation-steps.json",
+        MIMEType: "application/json",
+    })
+}
