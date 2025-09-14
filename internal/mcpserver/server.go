@@ -33,6 +33,7 @@ func RunStdio(ctx context.Context) error {
 	prompts.RegisterSurveyReadingFlow(server)
 	prompts.RegisterImplementationReadingFlow(server)
 	prompts.RegisterOutputGeneration(server)
+	prompts.RegisterCriticalAnalysis(server)
 
 	// Run blocks until the client disconnects or the context is canceled.
 	// StdioTransport uses the current process's stdin/stdout.

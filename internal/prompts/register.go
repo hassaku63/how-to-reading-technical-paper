@@ -66,30 +66,44 @@ func RegisterSurveyReadingFlow(s *mcp.Server) {
 
 // RegisterImplementationReadingFlow registers the implementation-reading-flow prompt.
 func RegisterImplementationReadingFlow(s *mcp.Server) {
-    p := &mcp.Prompt{
-        Name:        "implementation-reading-flow",
-        Title:       "実装向け読解フロー",
-        Description: "ソフトウェアエンジニアが論文のアイデアを実装するための読解フロー",
-        Arguments: []*mcp.PromptArgument{
-            {Name: "skill_goals", Title: "スキル目標", Description: "カンマ区切り推奨：例）分散システム, アルゴリズム最適化, API設計", Required: true},
-            {Name: "implementation_timeline", Title: "実装期間", Description: "例：1-3ヶ月", Required: false},
-            {Name: "current_level", Title: "現在レベル", Description: "初心者/中級者/上級者", Required: true},
-        },
-    }
-    registerPromptFromAsset(s, p, "prompts/implementation-reading-flow.txt")
+	p := &mcp.Prompt{
+		Name:        "implementation-reading-flow",
+		Title:       "実装向け読解フロー",
+		Description: "ソフトウェアエンジニアが論文のアイデアを実装するための読解フロー",
+		Arguments: []*mcp.PromptArgument{
+			{Name: "skill_goals", Title: "スキル目標", Description: "カンマ区切り推奨：例）分散システム, アルゴリズム最適化, API設計", Required: true},
+			{Name: "implementation_timeline", Title: "実装期間", Description: "例：1-3ヶ月", Required: false},
+			{Name: "current_level", Title: "現在レベル", Description: "初心者/中級者/上級者", Required: true},
+		},
+	}
+	registerPromptFromAsset(s, p, "prompts/implementation-reading-flow.txt")
 }
 
 // RegisterOutputGeneration registers the output-generation prompt.
 func RegisterOutputGeneration(s *mcp.Server) {
-    p := &mcp.Prompt{
-        Name:        "output-generation",
-        Title:       "構造化アウトプット生成",
-        Description: "読解結果を目的に応じた形式で構造化してアウトプットするフロー",
-        Arguments: []*mcp.PromptArgument{
-            {Name: "output_format", Title: "出力形式", Description: "研究メモ/技術ブログ/実装計画/プレゼン/レポート", Required: true},
-            {Name: "target_audience", Title: "対象読者", Description: "研究者/エンジニア/一般読者など", Required: true},
-            {Name: "key_insights", Title: "強調ポイント", Description: "カンマ区切りで列挙", Required: false},
-        },
-    }
-    registerPromptFromAsset(s, p, "prompts/output-generation.txt")
+	p := &mcp.Prompt{
+		Name:        "output-generation",
+		Title:       "構造化アウトプット生成",
+		Description: "読解結果を目的に応じた形式で構造化してアウトプットするフロー",
+		Arguments: []*mcp.PromptArgument{
+			{Name: "output_format", Title: "出力形式", Description: "研究メモ/技術ブログ/実装計画/プレゼン/レポート", Required: true},
+			{Name: "target_audience", Title: "対象読者", Description: "研究者/エンジニア/一般読者など", Required: true},
+			{Name: "key_insights", Title: "強調ポイント", Description: "カンマ区切りで列挙", Required: false},
+		},
+	}
+	registerPromptFromAsset(s, p, "prompts/output-generation.txt")
+}
+
+// RegisterCriticalAnalysis registers the critical-analysis prompt.
+func RegisterCriticalAnalysis(s *mcp.Server) {
+	p := &mcp.Prompt{
+		Name:        "critical-analysis",
+		Title:       "批判的論文分析",
+		Description: "論文の主張を批判的に検証し、限界と問題点を特定するフロー",
+		Arguments: []*mcp.PromptArgument{
+			{Name: "analysis_depth", Title: "分析の深さ", Description: "浅い/中程度/深い", Required: false},
+			{Name: "focus_area", Title: "重点分析領域", Description: "実験設計/理論的基盤/実装詳細 など", Required: false},
+		},
+	}
+	registerPromptFromAsset(s, p, "prompts/critical-analysis.txt")
 }
