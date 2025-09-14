@@ -90,3 +90,27 @@ func RegisterCriteriaPaperEvaluation(s *mcp.Server) {
         MIMEType: "application/json",
     })
 }
+
+// RegisterMethodologySurveyGuide registers the survey methodology guide (JSON).
+func RegisterMethodologySurveyGuide(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://methodology/survey-guide",
+        Name:     "methodology/survey-guide",
+        Title:    "サーベイ向け読解方法論",
+        Desc:     "大量の論文を効率的にサーベイするための3段階アプローチ",
+        Path:     "resources/methodology/survey-guide.json",
+        MIMEType: "application/json",
+    })
+}
+
+// RegisterMethodologyImplementationGuide registers the implementation methodology guide (JSON).
+func RegisterMethodologyImplementationGuide(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://methodology/implementation-guide",
+        Name:     "methodology/implementation-guide",
+        Title:    "実装向け読解方法論",
+        Desc:     "論文アイデアを実装するための読解手法（段階的アプローチ）",
+        Path:     "resources/methodology/implementation-guide.json",
+        MIMEType: "application/json",
+    })
+}

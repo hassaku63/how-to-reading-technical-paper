@@ -23,6 +23,8 @@ func RunStdio(ctx context.Context) error {
     resources.RegisterTemplatesReadingNotes(server)
     resources.RegisterPatternsCommonStructures(server)
     resources.RegisterCriteriaPaperEvaluation(server)
+    resources.RegisterMethodologySurveyGuide(server)
+    resources.RegisterMethodologyImplementationGuide(server)
 
     // Run blocks until the client disconnects or the context is canceled.
     // StdioTransport uses the current process's stdin/stdout.
