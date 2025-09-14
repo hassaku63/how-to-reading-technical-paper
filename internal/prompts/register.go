@@ -63,3 +63,18 @@ func RegisterSurveyReadingFlow(s *mcp.Server) {
 	}
 	registerPromptFromAsset(s, p, "prompts/survey-reading-flow.txt")
 }
+
+// RegisterImplementationReadingFlow registers the implementation-reading-flow prompt.
+func RegisterImplementationReadingFlow(s *mcp.Server) {
+    p := &mcp.Prompt{
+        Name:        "implementation-reading-flow",
+        Title:       "実装向け読解フロー",
+        Description: "ソフトウェアエンジニアが論文のアイデアを実装するための読解フロー",
+        Arguments: []*mcp.PromptArgument{
+            {Name: "skill_goals", Title: "スキル目標", Description: "カンマ区切り推奨：例）分散システム, アルゴリズム最適化, API設計", Required: true},
+            {Name: "implementation_timeline", Title: "実装期間", Description: "例：1-3ヶ月", Required: false},
+            {Name: "current_level", Title: "現在レベル", Description: "初心者/中級者/上級者", Required: true},
+        },
+    }
+    registerPromptFromAsset(s, p, "prompts/implementation-reading-flow.txt")
+}
