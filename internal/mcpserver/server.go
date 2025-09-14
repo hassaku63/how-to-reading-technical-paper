@@ -6,6 +6,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"github.com/hassaku63/how-to-reading-technical-paper/internal/prompts"
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/resources"
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/version"
 )
@@ -27,6 +28,9 @@ func RunStdio(ctx context.Context) error {
 	resources.RegisterMethodologyImplementationGuide(server)
 	resources.RegisterActionableSurveySteps(server)
 	resources.RegisterActionableImplementationSteps(server)
+
+	// Register prompts
+	prompts.RegisterSurveyReadingFlow(server)
 
 	// Run blocks until the client disconnects or the context is canceled.
 	// StdioTransport uses the current process's stdin/stdout.
