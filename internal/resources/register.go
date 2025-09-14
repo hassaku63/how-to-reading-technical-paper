@@ -52,5 +52,17 @@ func RegisterInitial(s *mcp.Server) {
 		Desc:     "論文スクリーニングのための標準化されたチェックリスト",
 		Path:     "resources/templates/screening-checklist.json",
 		MIMEType: "application/json",
-	})
+    })
+}
+
+// RegisterTemplatesReadingNotes registers the reading-notes template (Markdown).
+func RegisterTemplatesReadingNotes(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://templates/reading-notes",
+        Name:     "templates/reading-notes",
+        Title:    "読書メモテンプレート",
+        Desc:     "サーベイ/実装向けの標準化された読書メモテンプレート",
+        Path:     "resources/templates/reading-notes.json",
+        MIMEType: "application/json",
+    })
 }
