@@ -107,3 +107,17 @@ func RegisterCriticalAnalysis(s *mcp.Server) {
 	}
 	registerPromptFromAsset(s, p, "prompts/critical-analysis.txt")
 }
+
+// RegisterComparisonMatrix registers the comparison-matrix prompt.
+func RegisterComparisonMatrix(s *mcp.Server) {
+    p := &mcp.Prompt{
+        Name:        "comparison-matrix",
+        Title:       "論文比較分析マトリクス",
+        Description: "複数の論文を体系的に比較し、各手法の特徴と優劣を整理するフロー",
+        Arguments: []*mcp.PromptArgument{
+            {Name: "comparison_criteria", Title: "比較基準", Description: "カンマ区切りで記載：性能, 実装難易度, スケール 等", Required: true},
+            {Name: "paper_count", Title: "論文数", Description: "比較する論文数（例：3）", Required: false},
+        },
+    }
+    registerPromptFromAsset(s, p, "prompts/comparison-matrix.txt")
+}
