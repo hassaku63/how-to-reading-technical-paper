@@ -2,41 +2,46 @@
 
 GO ?= go
 PKG_SERVER := ./cmd/server
-PKG_CLIENT := ./cmd/client
+PKG_DEBUG_CLIENT := ./cmd/debug-client
 BIN_DIR := bin
 SERVER_BIN := $(BIN_DIR)/server
-CLIENT_BIN := $(BIN_DIR)/client
+DEBUG_CLIENT_BIN := $(BIN_DIR)/debug-client
 
-.PHONY: all build build-server build-client run-server run-client fmt clean test-client
+.PHONY: all build build-server build-debug-client run-server run-debug-client fmt clean test-debug-client
 
 all: build
 
-build: build-server build-client
+build: build-server build-debug-client
 
 build-server:
 	@mkdir -p $(BIN_DIR)
 	$(GO) build -trimpath -ldflags "-s -w" -o $(SERVER_BIN) $(PKG_SERVER)
 
-build-client:
+build-debug-client:
 	@mkdir -p $(BIN_DIR)
-	$(GO) build -trimpath -ldflags "-s -w" -o $(CLIENT_BIN) $(PKG_CLIENT)
+	$(GO) build -trimpath -ldflags "-s -w" -o $(DEBUG_CLIENT_BIN) $(PKG_DEBUG_CLIENT)
 
 run-server:
 	$(GO) run $(PKG_SERVER)
 
-run-client:
-	$(GO) run $(PKG_CLIENT)
+run-debug-client:
+	$(GO) run $(PKG_DEBUG_CLIENT)
 
-# Test client against a running MCP server
-test-client:
-	@echo "Testing MCP client against server..."
-	@echo "Make sure the server is running first: make run-server"
-	@echo "Then run: make test-client URL=http://localhost:8080"
-	@if [ -z "$(URL)" ]; then \
-		echo "Usage: make test-client URL=http://localhost:8080"; \
-		exit 1; \
-	fi
-	$(CLIENT_BIN) $(URL)
+# Test debug client against MCP server using stdio transport
+test-debug-client:
+	@echo "Testing MCP debug client against server using stdio..."
+	@echo "Usage: make test-debug-client"
+	$(DEBUG_CLIENT_BIN) -server $(SERVER_BIN)
+
+# Test debug client with verbose output
+test-debug-client-verbose:
+	@echo "Testing MCP debug client with verbose output..."
+	$(DEBUG_CLIENT_BIN) -server $(SERVER_BIN) -verbose
+
+# Show debug client help
+debug-client-help:
+	@echo "Showing debug client help..."
+	$(DEBUG_CLIENT_BIN) -help
 
 fmt:
 	$(GO) fmt ./...
