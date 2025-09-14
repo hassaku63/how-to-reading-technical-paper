@@ -7,17 +7,19 @@
 - **Description**: 論文の主張を批判的に検証し、限界と問題点を特定するフロー
 - **Category**: Analysis Workflow
 
-## 引数定義
+## MCP Schema
 
 ```json
 {
+  "name": "critical-analysis",
+  "title": "批判的論文分析",
+  "description": "論文の主張を批判的に検証し、限界と問題点を特定するフロー",
   "arguments": [
     {
       "name": "analysis_depth",
       "type": "string",
-      "enum": ["浅い", "中程度", "深い"],
-      "description": "分析の深さ",
-      "default": "中程度"
+      "description": "分析の深さ（浅い、中程度、深い）",
+      "required": false
     },
     {
       "name": "focus_area",
@@ -79,9 +81,9 @@
 
 ## 関連リソース
 
-- `paper://criteria/paper-evaluation` - 論文評価基準
-- `paper://templates/critical-analysis` - 批判的分析テンプレート
-- `paper://patterns/common-issues` - よくある問題パターン
+- `paper-reading://criteria/paper-evaluation` - 論文評価基準
+- `paper-reading://templates/critical-analysis` - 批判的分析テンプレート
+- `paper-reading://patterns/common-issues` - よくある問題パターン
 
 ## 注意事項
 
@@ -89,3 +91,21 @@
 - 建設的な批判を心がける
 - 改善提案を含める
 - 論文の価値も適切に評価する
+
+## セキュリティ考慮事項
+
+> [MCP Specification 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts#security) より:
+> 実装は「すべてのプロンプト入出力を慎重に検証し、インジェクション攻撃やリソースへの不正アクセスを防ぐ必要がある」
+
+### 入力検証
+- `analysis_depth` は事前定義されたレベルのみ受け入れる
+- `focus_area` に悪意のあるスクリプトやコマンドが含まれていないか検証
+- 批判分析パラメータの範囲を適切に制限
+
+### インジェクション攻撃対策
+- 批判分析テンプレートへのユーザー入力埋め込み時のエスケープ処理
+- プロンプトインジェクションや指示の上書きを防止
+
+### リソースアクセス制御
+- 分析対象の論文リソースへのアクセス権限を確認
+- 許可された `paper-reading://` リソースのみへのアクセスを許可

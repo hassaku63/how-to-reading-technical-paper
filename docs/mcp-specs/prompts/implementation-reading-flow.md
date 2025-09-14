@@ -7,29 +7,30 @@
 - **Description**: ソフトウェアエンジニアが論文のアイデアを実装するための読解フロー
 - **Category**: Reading Workflow
 
-## 引数定義
+## MCP Schema
 
 ```json
 {
+  "name": "implementation-reading-flow",
+  "title": "実装向け読解フロー",
+  "description": "ソフトウェアエンジニアが論文のアイデアを実装するための読解フロー",
   "arguments": [
     {
       "name": "skill_goals",
       "type": "array",
-      "items": {"type": "string"},
       "description": "習得したいスキル（分散システム、アルゴリズム最適化、API設計等）",
       "required": true
     },
     {
       "name": "implementation_timeline",
-      "type": "string", 
+      "type": "string",
       "description": "実装予定期間（例：1-3ヶ月）",
-      "default": "2ヶ月"
+      "required": false
     },
     {
       "name": "current_level",
       "type": "string",
-      "enum": ["初心者", "中級者", "上級者"],
-      "description": "現在の技術レベル",
+      "description": "現在の技術レベル（初心者、中級者、上級者）",
       "required": true
     }
   ]
@@ -83,9 +84,9 @@
 
 ## 関連リソース
 
-- `paper://guides/implementation-reading` - 実装向け読み方ガイド
-- `paper://templates/implementation-plan` - 実装計画テンプレート
-- `paper://checklists/implementation-readiness` - 実装準備チェックリスト
+- `paper-reading://guides/implementation-reading` - 実装向け読み方ガイド
+- `paper-reading://templates/implementation-plan` - 実装計画テンプレート
+- `paper-reading://checklists/implementation-readiness` - 実装準備チェックリスト
 
 ## 注意事項
 
@@ -93,3 +94,21 @@
 - 現在のスキルレベルに応じた計画を立てる
 - MVP（最小実装版）から始める
 - 各段階で具体的なアウトプットを生成する
+
+## セキュリティ考慮事項
+
+> [MCP Specification 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts#security) より:
+> 実装は「すべてのプロンプト入出力を慎重に検証し、インジェクション攻撃やリソースへの不正アクセスを防ぐ必要がある」
+
+### 入力検証
+- `skill_goals` 配列の各要素をサニタイズし、不正なスキル名を検出
+- `implementation_timeline` は適切な期間範囲に制限
+- `current_level` は事前定義されたレベルのみ受け入れる
+
+### インジェクション攻撃対策
+- 実装計画テンプレートへのユーザー入力埋め込み時のエスケープ処理
+- コードインジェクションやシステムコマンドの実行を防止
+
+### リソースアクセス制御
+- 実装対象の論文リソースへのアクセス権限を確認
+- コードリポジトリや実行環境への不正アクセスを防止

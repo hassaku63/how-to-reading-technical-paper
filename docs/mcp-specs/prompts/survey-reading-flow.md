@@ -7,10 +7,13 @@
 - **Description**: 研究者が大量の論文を効率的にサーベイするための構造化フロー
 - **Category**: Reading Workflow
 
-## 引数定義
+## MCP Schema
 
 ```json
 {
+  "name": "survey-reading-flow",
+  "title": "高速サーベイ読解フロー",
+  "description": "研究者が大量の論文を効率的にサーベイするための構造化フロー",
   "arguments": [
     {
       "name": "research_domain",
@@ -28,7 +31,7 @@
       "name": "time_budget",
       "type": "number",
       "description": "1論文あたりの時間予算（分）",
-      "default": 15
+      "required": false
     }
   ]
 }
@@ -80,12 +83,30 @@
 
 ## 関連リソース
 
-- `paper://guides/survey-reading` - サーベイ向け読み方ガイド
-- `paper://templates/reading-notes` - 読書メモテンプレート
-- `paper://criteria/paper-evaluation` - 論文評価基準
+- `paper-reading://guides/survey-reading` - サーベイ向け読み方ガイド
+- `paper-reading://templates/reading-notes` - 読書メモテンプレート
+- `paper-reading://criteria/paper-evaluation` - 論文評価基準
 
 ## 注意事項
 
 - 時間制限を厳守し、深入りを避ける
 - 各段階で必ずアウトプットを生成する
 - 理解度チェックポイントで人間の思考を確認する
+
+## セキュリティ考慮事項
+
+> [MCP Specification 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts#security) より:
+> 実装は「すべてのプロンプト入出力を慎重に検証し、インジェクション攻撃やリソースへの不正アクセスを防ぐ必要がある」
+
+### 入力検証
+- `research_domain` は事前定義された研究分野のみ受け入れる
+- `survey_goal` にシステムコマンドや悪意のあるスクリプトが含まれていないか検証
+- `time_budget` は適切な範囲（5-60分等）に制限
+
+### インジェクション攻撃対策
+- サーベイフローテンプレートへのユーザー入力埋め込み時のエスケープ処理
+- プロンプトインジェクションや指示の上書きを防止
+
+### リソースアクセス制御
+- サーベイ対象の論文リソースへのアクセス権限を確認
+- `paper-reading://` スキームのリソースのみへのアクセスを許可

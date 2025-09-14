@@ -7,16 +7,18 @@
 - **Description**: 読解結果を目的に応じた形式で構造化してアウトプットするフロー
 - **Category**: Output Workflow
 
-## 引数定義
+## MCP Schema
 
 ```json
 {
+  "name": "output-generation",
+  "title": "構造化アウトプット生成",
+  "description": "読解結果を目的に応じた形式で構造化してアウトプットするフロー",
   "arguments": [
     {
       "name": "output_format",
       "type": "string",
-      "enum": ["研究メモ", "技術ブログ", "実装計画", "プレゼン資料", "レポート"],
-      "description": "出力形式",
+      "description": "出力形式（研究メモ、技術ブログ、実装計画、プレゼン資料、レポート）",
       "required": true
     },
     {
@@ -28,7 +30,6 @@
     {
       "name": "key_insights",
       "type": "array",
-      "items": {"type": "string"},
       "description": "強調したい洞察・ポイント",
       "required": false
     }
@@ -88,9 +89,9 @@
 
 ## 関連リソース
 
-- `paper://templates/output-formats` - 出力形式テンプレート集
-- `paper://guides/writing-technical-content` - 技術文書作成ガイド
-- `paper://patterns/effective-communication` - 効果的なコミュニケーションパターン
+- `paper-reading://templates/output-formats` - 出力形式テンプレート集
+- `paper-reading://guides/writing-technical-content` - 技術文書作成ガイド
+- `paper-reading://patterns/effective-communication` - 効果的なコミュニケーションパターン
 
 ## 注意事項
 
@@ -98,3 +99,21 @@
 - 実用的な情報を含める
 - 次のアクションを明確にする
 - 批判的視点も含める
+
+## セキュリティ考慮事項
+
+> [MCP Specification 2025-06-18](https://modelcontextprotocol.io/specification/2025-06-18/server/prompts#security) より:
+> 実装は「すべてのプロンプト入出力を慎重に検証し、インジェクション攻撃やリソースへの不正アクセスを防ぐ必要がある」
+
+### 入力検証
+- `output_format` の値は事前定義された形式のみ受け入れる
+- `target_audience` に悪意のあるスクリプトが含まれていないか検証する
+- `key_insights` 配列の各要素をサニタイズする
+
+### インジェクション攻撃対策
+- プロンプトテンプレートに直接ユーザー入力を埋め込む際はエスケープ処理を実施
+- システムコマンドや危険なパターンの検出・除去
+
+### リソースアクセス制御
+- 参照される `paper-reading://` リソースへのアクセス権限を検証
+- 認可されたリソースのみへのアクセスを許可
