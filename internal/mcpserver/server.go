@@ -6,6 +6,7 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
+	"github.com/hassaku63/how-to-reading-technical-paper/internal/resources"
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/version"
 )
 
@@ -16,6 +17,16 @@ func RunStdio(ctx context.Context) error {
 		Name:    "paper-reading-mcp",
 		Version: version.Version,
 	}, nil)
+
+	// Register resources from embedded assets.
+	resources.RegisterTemplatesScreeningChecklist(server)
+	resources.RegisterTemplatesReadingNotes(server)
+	resources.RegisterPatternsCommonStructures(server)
+	resources.RegisterCriteriaPaperEvaluation(server)
+	resources.RegisterMethodologySurveyGuide(server)
+	resources.RegisterMethodologyImplementationGuide(server)
+	resources.RegisterActionableSurveySteps(server)
+	resources.RegisterActionableImplementationSteps(server)
 
 	// Run blocks until the client disconnects or the context is canceled.
 	// StdioTransport uses the current process's stdin/stdout.
