@@ -78,3 +78,18 @@ func RegisterImplementationReadingFlow(s *mcp.Server) {
     }
     registerPromptFromAsset(s, p, "prompts/implementation-reading-flow.txt")
 }
+
+// RegisterOutputGeneration registers the output-generation prompt.
+func RegisterOutputGeneration(s *mcp.Server) {
+    p := &mcp.Prompt{
+        Name:        "output-generation",
+        Title:       "構造化アウトプット生成",
+        Description: "読解結果を目的に応じた形式で構造化してアウトプットするフロー",
+        Arguments: []*mcp.PromptArgument{
+            {Name: "output_format", Title: "出力形式", Description: "研究メモ/技術ブログ/実装計画/プレゼン/レポート", Required: true},
+            {Name: "target_audience", Title: "対象読者", Description: "研究者/エンジニア/一般読者など", Required: true},
+            {Name: "key_insights", Title: "強調ポイント", Description: "カンマ区切りで列挙", Required: false},
+        },
+    }
+    registerPromptFromAsset(s, p, "prompts/output-generation.txt")
+}
