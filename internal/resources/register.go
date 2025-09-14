@@ -78,3 +78,15 @@ func RegisterPatternsCommonStructures(s *mcp.Server) {
         MIMEType: "application/json",
     })
 }
+
+// RegisterCriteriaPaperEvaluation registers the paper evaluation criteria (JSON).
+func RegisterCriteriaPaperEvaluation(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://criteria/paper-evaluation",
+        Name:     "criteria/paper-evaluation",
+        Title:    "論文評価基準",
+        Desc:     "論文の品質と価値を評価するための基準",
+        Path:     "resources/criteria/paper-evaluation.json",
+        MIMEType: "application/json",
+    })
+}
