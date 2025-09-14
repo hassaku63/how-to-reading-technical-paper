@@ -66,3 +66,15 @@ func RegisterTemplatesReadingNotes(s *mcp.Server) {
         MIMEType: "application/json",
     })
 }
+
+// RegisterPatternsCommonStructures registers the common paper structure patterns (JSON).
+func RegisterPatternsCommonStructures(s *mcp.Server) {
+    registerAsset(s, assetSpec{
+        URI:      "paper-reading://patterns/common-structures",
+        Name:     "patterns/common-structures",
+        Title:    "論文の一般的構造パターン",
+        Desc:     "システム/アルゴリズム/評価論文の構造とキーパート",
+        Path:     "resources/patterns/common-structures.json",
+        MIMEType: "application/json",
+    })
+}
