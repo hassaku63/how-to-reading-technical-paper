@@ -8,6 +8,7 @@ import (
 
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/prompts"
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/resources"
+	"github.com/hassaku63/how-to-reading-technical-paper/internal/tools/slash"
 	"github.com/hassaku63/how-to-reading-technical-paper/internal/version"
 )
 
@@ -18,6 +19,9 @@ func RunStdio(ctx context.Context) error {
 		Name:    "paper-reading-mcp",
 		Version: version.Version,
 	}, nil)
+
+	// Logging middleware
+	// server.AddReceivingMiddleware(withLogging)
 
 	// Register resources from embedded assets.
 	resources.RegisterTemplatesScreeningChecklist(server)
@@ -36,7 +40,11 @@ func RunStdio(ctx context.Context) error {
 	prompts.RegisterCriticalAnalysis(server)
 	prompts.RegisterComparisonMatrix(server)
 
-	// Run blocks until the client disconnects or the context is canceled.
+	// Register tools
+	slash.RegisterExportClaudeCommandsTool(server)
+	slash.RegisterPreviewClaudeCommandsTool(server)
+
+	// Run blocks until the client disconnects or the c ontext is canceled.
 	// StdioTransport uses the current process's stdin/stdout.
 	if err := server.Run(ctx, &mcp.StdioTransport{}); err != nil {
 		// The SDK returns context.Canceled when ctx is canceled; log for clarity.

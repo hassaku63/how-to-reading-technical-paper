@@ -10,6 +10,7 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
 	appassets "github.com/hassaku63/how-to-reading-technical-paper/assets"
+	"github.com/hassaku63/how-to-reading-technical-paper/internal/tools/slash"
 )
 
 // simpleTemplate fills {var} placeholders with values from args.
@@ -47,6 +48,9 @@ func registerPromptFromAsset(s *mcp.Server, p *mcp.Prompt, assetPath string) {
 		}, nil
 	}
 	s.AddPrompt(p, handler)
+
+	// Register metadata for export functionality
+	slash.RegisterPromptMeta(p.Name, p, assetPath)
 }
 
 // RegisterSurveyReadingFlow registers the survey-reading-flow prompt.
