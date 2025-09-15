@@ -73,6 +73,39 @@ type PreviewFileContent struct {
 // placeholderRe matches {arg} patterns to convert to ${N}
 var placeholderRe = regexp.MustCompile(`\{([a-zA-Z0-9_]+)\}`)
 
+// extractDefaultFromDescription extracts a default value from an argument description if present.
+// Supports patterns like:
+// - "デフォルト: 値" / "デフォルト：値" / "デフォルトは 値"
+// - "既定: 値" / "既定：値" / "既定は 値"
+// - "default: value"
+// The value ends before sentence delimiters or closing parentheses.
+func extractDefaultFromDescription(description string) (string, bool) {
+    if description == "" {
+        return "", false
+    }
+
+    patterns := []*regexp.Regexp{
+        regexp.MustCompile(`(?i)(?:デフォルト|既定)[\s]*[:：][\s]*([^\n。．、,，)）]+)`),
+        regexp.MustCompile(`(?i)(?:デフォルト|既定)は[\s]*([^\n。．、,，)）]+)`),
+        regexp.MustCompile(`(?i)default[\s]*[:：][\s]*([^\n。．、,，)）]+)`),
+    }
+
+    for _, re := range patterns {
+        m := re.FindStringSubmatch(description)
+        if len(m) >= 2 {
+            v := strings.TrimSpace(m[1])
+            v = strings.Trim(v, `"'「」『』“”`)
+            if v != "" {
+                if strings.HasPrefix(v, "例") || strings.HasPrefix(strings.ToLower(v), "e.g") {
+                    continue
+                }
+                return v, true
+            }
+        }
+    }
+    return "", false
+}
+
 // convertPlaceholders converts {arg} to ${N} based on argument order
 func convertPlaceholders(template string, args []*mcp.PromptArgument) string {
 	// Create argument position mapping
@@ -102,10 +135,10 @@ func convertPlaceholders(template string, args []*mcp.PromptArgument) string {
 			// For optional arguments, add default if available
 			for _, arg := range args {
 				if arg.Name == argName && !arg.Required {
-					// Simple default extraction from description
-					if strings.Contains(arg.Description, "デフォルト") ||
-					   strings.Contains(arg.Description, "既定") {
-						return fmt.Sprintf("${%d:-デフォルト値}", pos)
+					if defVal, ok := extractDefaultFromDescription(arg.Description); ok {
+						// avoid unbalanced braces in default text
+						safe := strings.ReplaceAll(defVal, "}", ")")
+						return fmt.Sprintf("${%d:-%s}", pos, safe)
 					}
 					return fmt.Sprintf("${%d}", pos)
 				}
