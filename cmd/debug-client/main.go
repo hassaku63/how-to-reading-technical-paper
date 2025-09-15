@@ -12,37 +12,46 @@ import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 )
 
-func printJSON(title string, data interface{}) {
-	fmt.Printf("\n=== %s ===\n", title)
-	jsonData, err := json.MarshalIndent(data, "", "  ")
+func printJSON(title string, data interface{}) error {
+	log.Printf("\n=== %s ===\n", title)
+	jsonData, err := json.Marshal(data)
 	if err != nil {
-		fmt.Printf("Error marshaling JSON: %v\n", err)
-		return
+		return fmt.Errorf("failed to marshal %s: %w", title, err)
 	}
 	fmt.Println(string(jsonData))
+	return nil
+}
+
+type ListTarget string
+
+func (lt ListTarget) String() string {
+	return string(lt)
+}
+
+const (
+	LIST_TARGET_ALL       ListTarget = "all"
+	LIST_TARGET_PROMPTS   ListTarget = "prompts"
+	LIST_TARGET_RESOURCES ListTarget = "resources"
+	LIST_TARGET_TOOLS     ListTarget = "tools"
+)
+
+func validateListTarget(listTarget string) error {
+	lt := ListTarget(listTarget)
+	if lt != LIST_TARGET_ALL && lt != LIST_TARGET_PROMPTS && lt != LIST_TARGET_RESOURCES && lt != LIST_TARGET_TOOLS {
+		return fmt.Errorf("invalid list target: %s", listTarget)
+	}
+	return nil
 }
 
 func main() {
 	// Define command line flags
 	var (
-		serverCmd = flag.String("server", "", "Server command to execute (required)")
-		verbose   = flag.Bool("verbose", false, "Enable verbose output")
-		timeout   = flag.Duration("timeout", 0, "Connection timeout (0 = no timeout)")
-		help      = flag.Bool("help", false, "Show help message")
+		serverCmd  = flag.String("server", "", "Server command to execute (required)")
+		verbose    = flag.Bool("verbose", false, "Enable verbose output")
+		timeout    = flag.Duration("timeout", 0, "Connection timeout (0 = no timeout)")
+		help       = flag.Bool("help", false, "Show help message")
+		listTarget = flag.String("list", "all", "What to list: all, prompts, resources, tools (default: all)")
 	)
-
-	// Custom usage message
-	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "MCP Debug Client - Test MCP servers using stdio transport\n\n")
-		fmt.Fprintf(os.Stderr, "This is a debug-only client for testing MCP server implementations.\n\n")
-		fmt.Fprintf(os.Stderr, "Usage: %s [options]\n\n", os.Args[0])
-		fmt.Fprintf(os.Stderr, "Options:\n")
-		flag.PrintDefaults()
-		fmt.Fprintf(os.Stderr, "\nExamples:\n")
-		fmt.Fprintf(os.Stderr, "  %s -server ./bin/server\n", os.Args[0])
-		fmt.Fprintf(os.Stderr, "  %s -server ./bin/server -verbose\n", os.Args[0])
-		fmt.Fprintf(os.Stderr, "  %s -server 'go run ./cmd/server' -timeout 30s\n", os.Args[0])
-	}
 
 	flag.Parse()
 
@@ -54,17 +63,20 @@ func main() {
 
 	// Validate required flags
 	if *serverCmd == "" {
-		fmt.Fprintf(os.Stderr, "Error: -server flag is required\n\n")
-		flag.Usage()
-		os.Exit(1)
+		log.Fatalf("Error: -server flag is required\n\n")
 	}
 
-	fmt.Println("MCP Debug Client Starting...")
+	if err := validateListTarget(*listTarget); err != nil {
+		log.Fatalf("Error: %v\n", err)
+	}
+
+	log.Println("MCP Debug Client Starting...")
 	if *verbose {
-		fmt.Printf("Server command: %s\n", *serverCmd)
-		fmt.Printf("Verbose mode: enabled\n")
+		log.Printf("Server command: %s\n", *serverCmd)
+		log.Printf("Verbose mode: enabled\n")
+		log.Printf("List target: %s\n", *listTarget)
 		if *timeout > 0 {
-			fmt.Printf("Timeout: %v\n", *timeout)
+			log.Printf("Timeout: %v\n", *timeout)
 		}
 	}
 
@@ -86,7 +98,7 @@ func main() {
 	// Parse the server command to handle shell commands properly
 	var cmd *exec.Cmd
 	if *verbose {
-		fmt.Printf("Executing command: %s\n", *serverCmd)
+		log.Printf("Executing command: %s\n", *serverCmd)
 	}
 
 	// For simple commands, use exec.Command directly
@@ -103,59 +115,75 @@ func main() {
 	}
 	defer session.Close()
 
-	fmt.Println("Connected to MCP server successfully")
+	log.Println("Connected to MCP server successfully")
 	if *verbose {
-		fmt.Println("Connection established via stdio transport")
+		log.Println("Connection established via stdio transport")
 	}
 
-	// Step 1: List all primitives
-	fmt.Println("\n1. Listing primitives...")
+	// Step 1: List requested primitives
+	log.Printf("1. Listing %s...\n", *listTarget)
 
 	// List Prompts
-	if *verbose {
-		fmt.Println("\n1.1. Listing Prompts...")
-	}
-	prompts, err := session.ListPrompts(ctx, &mcp.ListPromptsParams{})
-	if err != nil {
-		log.Printf("Warning: Failed to list prompts: %v", err)
-	} else {
-		printJSON("Prompts", prompts)
+	target := ListTarget(*listTarget)
+	shouldListPrompts := target == LIST_TARGET_ALL || target == LIST_TARGET_PROMPTS
+	if shouldListPrompts {
 		if *verbose {
-			fmt.Printf("Found %d prompts\n", len(prompts.Prompts))
+			log.Println("1.1. Listing Prompts...")
+		}
+		prompts, err := session.ListPrompts(ctx, &mcp.ListPromptsParams{})
+		if err != nil {
+			log.Printf("Warning: Failed to list prompts: %v", err)
+		} else {
+			if err := printJSON("Prompts", prompts); err != nil {
+				log.Fatalf("Failed to print prompts: %v", err)
+			}
+			if *verbose {
+				log.Printf("Found %d prompts\n", len(prompts.Prompts))
+			}
 		}
 	}
 
 	// List Resources
-	if *verbose {
-		fmt.Println("\n1.2. Listing Resources...")
-	}
-	resources, err := session.ListResources(ctx, &mcp.ListResourcesParams{})
-	if err != nil {
-		log.Printf("Warning: Failed to list resources: %v", err)
-	} else {
-		printJSON("Resources", resources)
+	shouldListResources := target == LIST_TARGET_ALL || target == LIST_TARGET_RESOURCES
+	if shouldListResources {
 		if *verbose {
-			fmt.Printf("Found %d resources\n", len(resources.Resources))
+			log.Println("1.2. Listing Resources...")
+		}
+		resources, err := session.ListResources(ctx, &mcp.ListResourcesParams{})
+		if err != nil {
+			log.Printf("Warning: Failed to list resources: %v", err)
+		} else {
+			if err := printJSON("Resources", resources); err != nil {
+				log.Fatalf("Failed to print resources: %v", err)
+			}
+			if *verbose {
+				log.Printf("Found %d resources\n", len(resources.Resources))
+			}
 		}
 	}
 
 	// List Tools
-	if *verbose {
-		fmt.Println("\n1.3. Listing Tools...")
-	}
-	tools, err := session.ListTools(ctx, &mcp.ListToolsParams{})
-	if err != nil {
-		log.Printf("Warning: Failed to list tools: %v", err)
-	} else {
-		printJSON("Tools", tools)
+	shouldListTools := target == LIST_TARGET_ALL || target == LIST_TARGET_TOOLS
+	if shouldListTools {
 		if *verbose {
-			fmt.Printf("Found %d tools\n", len(tools.Tools))
+			log.Println("1.3. Listing Tools...")
+		}
+		tools, err := session.ListTools(ctx, &mcp.ListToolsParams{})
+		if err != nil {
+			log.Printf("Warning: Failed to list tools: %v", err)
+		} else {
+			if err := printJSON("Tools", tools); err != nil {
+				log.Fatalf("Failed to print tools: %v", err)
+			}
+			if *verbose {
+				log.Printf("Found %d tools\n", len(tools.Tools))
+			}
 		}
 	}
 
-	fmt.Println("\n2. Shutdown complete")
+	log.Println("2. Shutdown complete")
 	if *verbose {
-		fmt.Println("All operations completed successfully")
+		log.Println("All operations completed successfully")
 	}
-	fmt.Println("MCP Debug Client finished successfully")
+	log.Println("MCP Debug Client finished successfully")
 }
